@@ -45,6 +45,8 @@ dependencies:
   hydrated_bloc: ^9.1.1
   path_provider: ^2.0.15
   google_fonts: ^4.0.5
+  firebase_messaging: ^14.6.1
+  firebase_core: ^2.13.0
 flutter_native_splash:
   android: true
   ios: true
@@ -90,10 +92,13 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
+  #  - family: Montserrat
+   #   fonts:
+    #    - asset: assets/fonts/Montserrat-Regular.ttf
+    #      weight: 300
+     #   - asset: assets/fonts/Montserrat-Bold.ttf
+      #    weight: 600
+
   #         style: italic
   #   - family: Trajan Pro
   #     fonts:

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "226397972835",
+    "project_id": "new-1-1b8a7",
+    "storage_bucket": "new-1-1b8a7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:226397972835:android:4aa4e86f01364f79798b56",
+        "android_client_info": {
+          "package_name": "com.example.ny_times1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY2LELgc6NW-pU8CZnUV4P68zn4ckyLds"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
