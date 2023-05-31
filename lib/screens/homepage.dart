@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ny_times1/bloc/news_bloc.dart';
 
-import '../bloc/theme_cubit.dart';
+import '../bloc/theme_bloc.dart';
 
 final dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 20),
@@ -39,19 +39,31 @@ class HomeScreen extends StatelessWidget {
               ),
             ),
                 SliverToBoxAdapter(
-                  child: BlocBuilder<ThemeCubit, bool>(
-                    builder: (context, state) {
-                      return SwitchListTile(
-                        title: Text("Breaking News", style:Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 30,fontWeight:FontWeight.bold),),
-                        value: state,
-                        onChanged: (value) {
-                          BlocProvider.of<ThemeCubit>(context).toggleTheme(value: value);
-                        },
+                  child: BlocBuilder<ThemeBloc, bool>(
+             builder: (context, isDark) {
+             return Container (
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Theme: ${isDark ? 'Dark' : 'Light'}'),
+                        IconButton(onPressed: (){
+                          context.read<ThemeBloc>().add(ThemeEvent.toggle);
 
-                      );
-                    },
-                  ),
+                        }, icon: isDark ? Icon(Icons.dark_mode_outlined):Icon(Icons.light_mode_outlined)
+
+                        )],
+                    ),
+                  );
+  },
+)
+
+
+
+
                 ),
+
+
             SliverList(delegate: SliverChildBuilderDelegate((context, index) {
               return Container(
                 decoration: const BoxDecoration(

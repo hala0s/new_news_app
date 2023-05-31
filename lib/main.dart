@@ -1,49 +1,65 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:hydrated_bloc/hydrated_bloc.dart';
-import 'package:ny_times1/bloc/theme_cubit.dart';
+import 'package:ny_times1/bloc/theme_bloc.dart';
 import 'package:ny_times1/screens/homepage.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final prefs = await SharedPreferences.getInstance();
+  final isDark = prefs.getBool('isDark') ?? false ;
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform );
-  final fcmToken = await FirebaseMessaging.instance.getToken();
-  print(fcmToken);
-  HydratedBloc.storage = await HydratedStorage.build(
-      storageDirectory: await getApplicationDocumentsDirectory());
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  NotificationSettings settings = await messaging.requestPermission(
+    alert: true,
+    announcement: false,
+    badge: true,
+    carPlay: false,
+    criticalAlert: false,
+    provisional: false,
+    sound: true,
+  );
+
+  FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+    print('Got a message whilst in the foreground!');
+    print('Message data: ${message.data}');
+
+    if (message.notification != null) {
+      print('Message also contained a notification: ${message.notification}');
+    }
+  });
+
   await Future.delayed(const Duration(seconds: 2));
   FlutterNativeSplash.remove();
 
-  runApp(const MyApp());
+  runApp( MyApp(isDark: isDark,));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
 
-  @override
+class MyApp extends StatelessWidget  {
+  final bool isDark ;
+  const MyApp({Key? key, required this.isDark}) : super(key: key);  @override
   Widget build(BuildContext context) {
-    return BlocProvider<ThemeCubit>(
-      create: (context) => ThemeCubit(),
-      child: BlocBuilder<ThemeCubit, bool>(
-        builder: (context, state) {
+    return MultiProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ThemeBloc(),
+        ),
+      ],
+      child: Consumer<ThemeBloc>(
+        builder: (context, themeBloc, child) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-
-            themeMode: state ? ThemeMode.light : ThemeMode.dark,
+            title: 'Flutter Demo',
+            theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),
-            theme:
-             ThemeData(
-               fontFamily: GoogleFonts.lato().fontFamily,
-             ) ,
-
+            themeMode: themeBloc.state ? ThemeMode.dark : ThemeMode.light,
             home: const HomeScreen(),
-
           );
         },
       ),

@@ -47,6 +47,8 @@ dependencies:
   google_fonts: ^4.0.5
   firebase_messaging: ^14.6.1
   firebase_core: ^2.13.0
+  flutter_local_notifications: ^14.1.0
+  provider: ^6.0.5
 flutter_native_splash:
   android: true
   ios: true
