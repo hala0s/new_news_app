@@ -49,6 +49,7 @@ dependencies:
   firebase_core: ^2.13.0
   flutter_local_notifications: ^14.1.0
   provider: ^6.0.5
+  flutter_slidable: ^3.0.0
 flutter_native_splash:
   android: true
   ios: true
