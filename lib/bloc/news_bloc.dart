@@ -10,10 +10,12 @@ part 'news_event.dart';
 part 'news_state.dart';
 
 class NewsBloc extends Bloc<NewsEvent, NewsState> {
-  NewsBloc(this.httpClient) : super(const NewsState()) {
+
+
+  NewsBloc(this.httpClient)
+      : super(const NewsState()) {
     on<Newsfetch>(_onNewsFetched);
   }
-
   final Dio httpClient;
 
   Future<void> _onNewsFetched(Newsfetch event, Emitter<NewsState> emit) async {

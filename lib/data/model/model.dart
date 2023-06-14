@@ -108,7 +108,6 @@ class Media {
   final String subtype;
   final String caption;
   final String copyright;
-  final int approvedForSyndication;
   final List<MediaMetadata> mediaMetadata;
 
   // data["media"]=media.map((e) =>(e.tojson())).toList();
@@ -118,7 +117,6 @@ class Media {
     required this.subtype,
     required this.caption,
     required this.copyright,
-    required this.approvedForSyndication,
     required this.mediaMetadata,
 
 
@@ -129,8 +127,7 @@ class Media {
     data["subtype"] = subtype;
     data["caption"] = caption;
     data["copyright"] = copyright;
-    data["approvedForSyndication"] = approvedForSyndication;
-    data[ 'media-metadata']= mediaMetadata.map((e) => e.toJson()).toList();
+    data['media-metadata']= mediaMetadata.map((e) => e.toJson()).toList();
     return data;
   }
 
@@ -144,7 +141,6 @@ class Media {
       subtype: json['subtype'],
       caption: json['caption'],
       copyright: json['copyright'],
-      approvedForSyndication: json['approved_for_syndication'],
       mediaMetadata: metadata,
 
     );

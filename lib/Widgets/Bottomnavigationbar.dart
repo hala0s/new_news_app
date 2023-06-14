@@ -1,36 +1,41 @@
 import 'package:flutter/material.dart';
-import 'package:ny_times1/provider/fav.dart';
+import 'package:ny_times1/screens/fav.dart';
 import 'package:ny_times1/screens/homepage.dart';
 import 'package:ny_times1/screens/search_screen.dart';
 
+
 class MyBottomNavigationBar extends StatefulWidget {
+  const MyBottomNavigationBar({super.key});
+
   @override
-  _MyBottomNavigationBarState createState() => _MyBottomNavigationBarState();
+  createState() => _MyBottomNavigationBarState();
 }
 
 class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   int _currentIndex = 0;
-  PageController _pageController = PageController(initialPage: 0);
+  final PageController _pageController = PageController(initialPage: 0);
+  late List<Widget> _screens;
 
-  List<Widget> _screens = [
-    // Define your screens here
-    HomeScreen(),
-    SearchScreen(),
-    favlist(
-      favres: [],
-    )
-  ];
+  @override
+  initState() {
+    super.initState();
+    _screens = [
+      HomeScreen(),
+      SearchScreen(),
+      favlist()
+    ];
+  }
 
-  List<BottomNavigationBarItem> _bottomNavigationBarItems = [
-    BottomNavigationBarItem(
+  final List<BottomNavigationBarItem> _bottomNavigationBarItems = [
+    const BottomNavigationBarItem(
       icon: Icon(Icons.home),
       label: 'Home',
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       icon: Icon(Icons.search),
       label: 'Search',
     ),
-    BottomNavigationBarItem(
+    const BottomNavigationBarItem(
       icon: Icon(Icons.favorite),
       label: 'Favourites',
     ),
@@ -41,7 +46,7 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       _currentIndex = index;
       _pageController.animateToPage(
         _currentIndex,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     });

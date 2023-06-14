@@ -1,15 +1,12 @@
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:ny_times1/Widgets/Bottomnavigationbar.dart';
 import 'package:ny_times1/bloc/news_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/theme_bloc.dart';
 import '../data/model/model.dart';
-import '../provider/fav.dart';
 
 final dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 20),
@@ -21,12 +18,9 @@ class HomeScreen extends StatefulWidget {
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
-
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
-
   ///Search
   ///New screen
   ///pass All result to new screen
@@ -41,111 +35,77 @@ class _HomeScreenState extends State<HomeScreen> {
     var ins = await SharedPreferences.getInstance();
     var resultString = ins.getString("fav");
     if (resultString != null) {
-      _favres = (jsonDecode(resultString) as List)
-          .map((e) => Results.fromJson(e))
-          .toList();
+      _favres = (jsonDecode(resultString) as List).map((e) => Results.fromJson(e)).toList();
       setState(() {});
     }
   }
 
-  @override
-  void initState() {
-    loadFav();
-    super.initState();
-  }
 
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: (context) => NewsBloc(dio)..add(Newsfetch()),
-        child: Scaffold(
-          body: BlocBuilder<NewsBloc, NewsState>(
-            builder: (context, state) {
-              if (state.status == NewsStatus.success) {
-                return CustomScrollView(slivers: [
-                  SliverAppBar(
-                    expandedHeight: 250.0,
-                    flexibleSpace: FlexibleSpaceBar(
-                      title: const Text(""),
-                      background: Image.network(
-                        'https://img.freepik.com/free-photo/top-view-old-french-newspaper-pieces_23-2149318857.jpg?w=1060&t=st=1685283474~exp=1685284074~hmac=b3570da209a25fb18c5fc5f71474d36a6a7a25d4e98b055e89dde6d79a9bea8d0',
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                  SliverToBoxAdapter(child: BlocBuilder<ThemeBloc, bool>(
-                    builder: (context, isDark) {
-                      return Container(
-                        padding: EdgeInsets.all(16.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Theme: ${isDark ? 'Dark' : 'Light'}',
-                            ),
-                            IconButton(
-                                onPressed: () {
-                                  context
-                                      .read<ThemeBloc>()
-                                      .add(ThemeEvent.toggle);
-                                },
-                                icon: isDark
-                                    ? Icon(Icons.dark_mode)
-                                    : Icon(Icons.light_mode)),
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => favlist(
-                                              favres: _favres,
-                                            )),
-                                  );
-                                },
-                                icon: Icon(Icons.favorite))
-                          ],
-                        ),
-                      );
-                    },
-                  )),
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, index) {
-                      final isFav = _favres
-                          .contains(state.allResults!.results![index] ?? "");
-                      return Item(
-                        results: state.allResults!.results![index],
-                        child: IconButton(
-                            onPressed: () async {
-                              // Navigator.push(
-                              //   context,
-                              //   MaterialPageRoute(builder: (context) => favlist()),
-                              // );\
-                              await toggleFav(
-                                  state.allResults!.results![index]);
-                            },
-                            icon: Icon(
-                              isFav
-                                  ? Icons.favorite
-                                  : Icons.favorite_outline_outlined,
-                              color: Colors.red,
-                            )),
-                      );
-                    }, childCount: state.allResults?.results?.length),
-                  )
-                ]);
-              }
+    final bloc=context.read<NewsBloc>()..add(Newsfetch());
+    return  Scaffold(
 
-              return const Center(child: CircularProgressIndicator());
-            },
-          ),
-          bottomNavigationBar: Container(
-             margin: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(16),
-                color: Colors.blueGrey.withOpacity(0.5)),
-            child:MyBottomNavigationBar(),
-             )));
+      body: BlocBuilder<NewsBloc, NewsState>(
+        bloc: bloc,
+        builder: (context, state) {
+          if (state.status == NewsStatus.success) {
+            return CustomScrollView(slivers: [
+              SliverAppBar(
+                expandedHeight: 250.0,
+                flexibleSpace: FlexibleSpaceBar(
+                  title: const Text(" " ),
+                  background: Image.network(
+                    'https://img.freepik.com/free-vector/breaking-news-tv-concept-backdrop-banner_1017-14194.jpg?w=996&t=st=1686738862~exp=1686739462~hmac=bef35dc2d822cf306f6517fe5434575306233cbfffc1f257285c802a3e91d9ac',
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+              SliverToBoxAdapter(child: BlocBuilder<ThemeBloc, bool>(
+                builder: (context, isDark) {
+                  return Container(
+                    padding: EdgeInsets.all(16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Top News'  ,style: TextStyle(fontSize: 23,fontWeight: FontWeight.bold),
+                        ),
+                        IconButton(
+                            onPressed: () {
+                              context.read<ThemeBloc>().add(ThemeEvent.toggle);
+                            },
+                            icon: isDark ? Icon(Icons.dark_mode) : Icon(Icons.light_mode , size: 25,)),
+
+                      ],
+                    ),
+                  );
+                },
+              )),
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  final isFav = _favres.contains(state.allResults!.results![index]  );
+                  return Item(
+                    results: state.allResults!.results![index],
+                    child: IconButton(
+                        onPressed: () async {
+                          await toggleFav(state.allResults!.results![index]);
+                        },
+                        icon: Icon(
+                          isFav ? Icons.favorite : Icons.favorite_outline_outlined,
+                          color: Colors.redAccent ,
+                        )),
+                  );
+                }, childCount: state.allResults?.results?.length),
+              )
+            ]);
+          }
+
+          return const Center(child: CircularProgressIndicator());
+        },
+      ),
+    );
   }
 
   List<Results> _favres = [];
@@ -169,6 +129,7 @@ class Item extends StatelessWidget {
   const Item({Key? key, this.child, required this.results}) : super(key: key);
   final Widget? child;
   final Results results;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -185,16 +146,15 @@ class Item extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  width: 100.0,
-                  height: 150.0,
+                  width: 80.0,
+                  height: 80.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: Image.network(
-                      results.media.firstOrNull?.mediaMetadata.firstOrNull
-                              ?.url ??
+                      results.media.firstOrNull?.mediaMetadata.firstOrNull?.url ??
                           "https://library.northwestu.edu/wp-content/uploads/2019/06/nytimes.png",
                       fit: BoxFit.fill,
                       height: 150.0,
@@ -209,14 +169,15 @@ class Item extends StatelessWidget {
             flex: 2,
             child: Text(
               results.title ?? "",
-              style:
-                  Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18),
+
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 16),
             ),
           ),
+
           if (child != null) child!,
         ],
       ),
     );
-    ();
+
   }
 }
