@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../bloc/theme_bloc.dart';
 import '../data/model/model.dart';
+import '../main.dart';
+import '../notification/notification.dart';
 
 final dio = Dio(BaseOptions(
     sendTimeout: const Duration(seconds: 20),
@@ -77,7 +79,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               context.read<ThemeBloc>().add(ThemeEvent.toggle);
                             },
                             icon: isDark ? Icon(Icons.dark_mode) : Icon(Icons.light_mode , size: 25,)),
-
+                     IconButton(onPressed: (){
+                       Noti.showBigTextNotification(title: 'hello ', body: 'you have new news ', fln: flutterLocalNotificationsPlugin);
+                     }, icon: Icon(Icons.notifications))
                       ],
                     ),
                   );

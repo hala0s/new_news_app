@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ny_times1/screens/fav.dart';
 import 'package:ny_times1/screens/homepage.dart';
+import 'package:ny_times1/screens/notification.dart';
 import 'package:ny_times1/screens/search_screen.dart';
 
 
@@ -20,9 +21,11 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
   initState() {
     super.initState();
     _screens = [
-      HomeScreen(),
-      SearchScreen(),
-      favlist()
+      const HomeScreen(),
+      const SearchScreen(),
+      favlist(),
+      const NotiScreen(),
+
     ];
   }
 
@@ -39,6 +42,8 @@ class _MyBottomNavigationBarState extends State<MyBottomNavigationBar> {
       icon: Icon(Icons.favorite),
       label: 'Favourites',
     ),
+
+
   ];
 
   void _onTap(int index) {

@@ -1,6 +1,7 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:ny_times1/bloc/news_bloc.dart';
 import 'package:ny_times1/bloc/theme_bloc.dart';
@@ -12,8 +13,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Widgets/Bottomnavigationbar.dart';
 import 'firebase_options.dart';
 import 'get/get_it.dart';
+import 'notification/notification.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
+
   setupLocator();
   WidgetsFlutterBinding.ensureInitialized();
   final prefs = await SharedPreferences.getInstance();
@@ -39,12 +44,22 @@ Future<void> main() async {
   ));
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+
   final bool isDark;
 
   const MyApp({Key? key, required this.isDark}) : super(key: key);
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+ void initstate (){
+    super.initState();
+    Noti.initialize(flutterLocalNotificationsPlugin);
+  }
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
@@ -52,8 +67,7 @@ class MyApp extends StatelessWidget {
           create: (context) => ThemeBloc(),
         ),
         BlocProvider(
-          create: (context) => NewsBloc(dio),
-        ),
+            create: (context)=> NewsBloc(dio)),
       ],
       child: Consumer<ThemeBloc>(
         builder: (context, themeBloc, child) {

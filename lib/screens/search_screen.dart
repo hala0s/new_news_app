@@ -38,7 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
               TextField(
                 obscureText: false,
                 decoration: InputDecoration(
-                  fillColor: Color(0xFFE5F9DB),
+                  fillColor: const Color(0xFFE5F9DB),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
